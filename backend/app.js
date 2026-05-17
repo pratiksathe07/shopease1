@@ -66,7 +66,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // ──────────────────────────────────────────────────
 // STATIC FILES — serve uploaded product images
-// Access via: https://shopease1-backend.onrender.com/uploads/<filename>
+// Access via: https://shopease1-backend-vit4.onrender.com/uploads/<filename>
 // ──────────────────────────────────────────────────
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

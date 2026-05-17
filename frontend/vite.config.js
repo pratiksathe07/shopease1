@@ -10,7 +10,7 @@ export default defineConfig({
     // Proxy API requests to backend — avoids CORS issues in dev
     proxy: {
       '/api': {
-        target: 'https://shopease1-backend.onrender.com',
+        target: 'https://shopease1-backend-vit4.onrender.com',
         changeOrigin: true,
       },
     },
