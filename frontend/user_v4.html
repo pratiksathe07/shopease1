@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopEase - Online Store</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+    }
+
+    body {
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    /* Header */
+    header {
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav {
+      max-width: 1300px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-img {
+      height: 40px;
+      width: 40px;
+      object-fit: contain;
+      border-radius: 6px;
+      background: #eee;
+    }
+
+    .logo {
+      font-size: 1.6rem;
+      font-weight: bold;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+      max-width: 500px;
+      display: flex;
+      border: 2px solid #eee;
+      border-radius: 25px;
+      overflow: hidden;
+    }
+
+    .search-box input {
+      flex: 1;
+      padding: 10px 18px;
+      border: none;
+      outline: none;
+      font-size: 0.95rem;
+    }
+
+    .search-box button {
+      padding: 0 20px;
+      background: #667eea;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Account Dropdown */
+    .account {
+      position: relative;
+    }
+
+    .account-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .account-btn:hover {
+      background: #ececec;
+    }
+
+    .dropdown {
+      position: absolute;
+      right: 0;
+      top: 110%;
+      min-width: 200px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      display: none;
+      z-index: 200;
+    }
+
+    .dropdown.show {
+      display: block;
+    }
+
+    .dropdown .user-info {
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+    }
+
+    .dropdown .user-info strong {
+      display: block;
+      font-size: 0.95rem;
+    }
+
+    .dropdown .user-info span {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
+    .dropdown a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      color: #333;
+      text-decoration: none;
+      font-size: 0.93rem;
+      cursor: pointer;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .dropdown a:hover {
+      background: #f8f8ff;
+      color: #667eea;
+    }
+
+    .dropdown a.logout {
+      color: #e74c3c;
+    }
+
+    .cart-btn,
+    .wish-btn {
+      position: relative;
+      padding: 8px 14px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .wish-btn {
+      background: #e74c3c;
+    }
+
+    .badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: #ff4757;
+      color: white;
+      font-size: 0.7rem;
+      padding: 2px 7px;
+      border-radius: 50%;
+      font-weight: bold;
+    }
+
+    /* Categories */
+    .categories {
+      max-width: 1300px;
+      margin: 20px auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .cat-btn {
+      padding: 8px 18px;
+      background: white;
+      border: 2px solid #ddd;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .cat-btn.active,
+    .cat-btn:hover {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    /* Hero */
+    .hero {
+      max-width: 1300px;
+      margin: 20px auto;
+      padding: 40px 30px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 15px;
+      color: white;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      opacity: 0.9;
+    }
+
+    /* Products */
+    .products {
+      max-width: 1300px;
+      margin: 20px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 20px;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      transition: transform 0.2s;
+      position: relative;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    .product-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: #ccc;
+    }
+
+    .wishlist-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      transition: transform 0.15s;
+    }
+
+    .wishlist-icon:hover {
+      transform: scale(1.15);
+    }
+
+    .wishlist-icon.active {
+      color: #e74c3c;
+    }
+
+    .product-info {
+      padding: 15px;
+    }
+
+    .product-cat {
+      font-size: 0.75rem;
+      color: #999;
+      text-transform: uppercase;
+    }
+
+    .product-name {
+      font-weight: 600;
+      margin: 5px 0;
+      font-size: 1rem;
+    }
+
+    .product-price {
+      font-size: 1.25rem;
+      color: #667eea;
+      font-weight: bold;
+      margin: 8px 0;
+    }
+
+    .add-cart {
+      width: 100%;
+      padding: 9px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .add-cart:hover {
+      background: #5568d3;
+    }
+
+    /* Cart Sidebar */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 998;
+    }
+
+    .overlay.show {
+      display: block;
+    }
+
+    .cart-sidebar {
+      position: fixed;
+      right: -420px;
+      top: 0;
+      height: 100vh;
+      width: 400px;
+      max-width: 90vw;
+      background: white;
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+      transition: right 0.3s;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-sidebar.open {
+      right: 0;
+    }
+
+    .cart-header {
+      padding: 18px;
+      background: #667eea;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.6rem;
+      cursor: pointer;
+    }
+
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .cart-item-info {
+      flex: 1;
+    }
+
+    .cart-item h4 {
+      font-size: 0.95rem;
+    }
+
+    .cart-item .price {
+      color: #667eea;
+      font-weight: bold;
+      margin: 4px 0;
+    }
+
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .qty-controls button {
+      width: 26px;
+      height: 26px;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .remove-btn {
+      color: #e74c3c;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .cart-footer {
+      padding: 18px;
+      border-top: 2px solid #eee;
+    }
+
+    .total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      padding: 12px;
+      background: #2ecc71;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: #999;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #2ecc71;
+      color: white;
+      padding: 12px 22px;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transform: translateX(500px);
+      transition: transform 0.3s;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    /* Wishlist Modal */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1001;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #eee;
+    }
+
+    .wishlist-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .wishlist-item-info {
+      flex: 1;
+    }
+
+    .wishlist-item button {
+      margin-right: 6px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .move-cart {
+      background: #667eea;
+      color: white;
+    }
+
+    .remove-wish {
+      background: #e74c3c;
+      color: white;
+    }
+
+    /* Buy button */
+    .buy-btn {
+      width: 100%;
+      padding: 9px;
+      margin-top: 6px;
+      background: #ff9800;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .buy-btn:hover {
+      background: #f57c00;
+    }
+
+    /* Checkout Stepper */
+    .stepper {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0 20px;
+      gap: 8px;
+    }
+
+    .step {
+      flex: 1;
+      text-align: center;
+      padding: 8px 4px;
+      background: #f0f0f0;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      color: #777;
+      font-weight: 500;
+    }
+
+    .step.active {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+    }
+
+    .step.done {
+      background: #2ecc71;
+      color: white;
+    }
+
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      margin-top: 6px;
+    }
+
+    .form-textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px dashed #eee;
+    }
+
+    .summary-row.total-row {
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #667eea;
+      border-bottom: none;
+      border-top: 2px solid #667eea;
+      margin-top: 6px;
+      padding-top: 12px;
+    }
+
+    .pay-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .pay-option.selected {
+      border-color: #667eea;
+      background: #f0f3ff;
+    }
+
+    .qr-box {
+      text-align: center;
+      padding: 14px;
+      background: #fafafa;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    .qr-box img {
+      width: 200px;
+      height: 200px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: white;
+    }
+
+    .step-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+      flex: 1;
+    }
+
+    .btn-primary:hover {
+      background: #5568d3;
+    }
+
+    .btn-secondary {
+      background: #eee;
+      color: #333;
+    }
+
+    /* Order status badge */
+    .status-badge {
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      color: white;
+      font-weight: 500;
+    }
+
+    .status-Pending {
+      background: #f39c12;
+    }
+
+    .status-Confirmed {
+      background: #3498db;
+    }
+
+    .status-Shipped {
+      background: #9b59b6;
+    }
+
+    .status-Delivered {
+      background: #2ecc71;
+    }
+
+    .status-Cancelled {
+      background: #e74c3c;
+    }
+
+    /* Stars */
+    .star-input {
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #ddd;
+    }
+
+    .star-input.active {
+      color: #f1c40f;
+    }
+
+    .stars-display {
+      color: #f1c40f;
+      font-size: 0.95rem;
+    }
+
+    .review-card {
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #fafafa;
+    }
+
+    .review-card img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-top: 6px;
+    }
+
+    .product-detail-img {
+      width: 100%;
+      height: 220px;
+      background: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="nav">
+      <div class="logo-wrap">
+        <img src="logo.png" alt="ShopEase Logo" class="logo-img" onerror="this.style.display='none'" />
+        <span class="logo"><i>ShopEase</i></span>
+      </div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search products..." />
+        <button onclick="renderProducts()">🔍</button>
+      </div>
+      <div class="nav-actions">
+        <div class="account">
+          <button class="account-btn" onclick="toggleDropdown()">
+            👤 <span id="userName">Account</span> ▾
+          </button>
+          <div class="dropdown" id="userDropdown">
+            <div class="user-info">
+              <strong id="dropName">Guest User</strong>
+              <span id="dropEmail">guest@shopease.com</span>
+            </div>
+            <a onclick="showProfile()">👤 My Profile</a>
+            <a onclick="showOrders()">📦 Orders</a>
+            <a onclick="showWishlist()">❤️ Wishlist (<span id="wishCountDrop">0</span>)</a>
+            <a class="logout" onclick="logout()">🚪 Logout</a>
+          </div>
+        </div>
+        <button class="wish-btn" onclick="showWishlist()">
+          ❤️ <span class="badge" id="wishBadge">0</span>
+        </button>
+        <button class="cart-btn" onclick="toggleCart()">
+          🛒 Cart <span class="badge" id="cartCount">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="hero">
+    <h1>Welcome to <i>ShopEase</i></h1>
+    <p><b><i>Shop Smart, Shop Easy, Shop Online.</i></b></p>
+  </div>
+
+  <div class="categories" id="categoryFilter"></div>
+
+  <div class="products" id="productGrid"></div>
+
+  <div class="overlay" id="overlay" onclick="toggleCart()"></div>
+
+  <aside class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+      <h2>🛒 Your Cart</h2>
+      <button class="close-btn" onclick="toggleCart()">×</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer">
+      <div class="total">Total: <span id="cartTotal">₹0.00</span></div>
+      <button class="checkout-btn" onclick="checkout()">Checkout</button>
+    </div>
+  </aside>
+
+  <!-- Wishlist Modal -->
+  <div class="modal" id="wishlistModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>❤️ My Wishlist</h2>
+        <button class="close-btn" style="color:#333;" onclick="closeModal('wishlistModal')">×</button>
+      </div>
+      <div id="wishlistItems"></div>
+    </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div class="modal" id="profileModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>👤 My Profile</h2>
+        <button class="close-btn" style="color:#333;" onclick="closeModal('profileModal')">×</button>
+      </div>
+      <div id="profileContent"></div>
+    </div>
+  </div>
+
+  <!-- Orders Modal -->
+  <div class="modal" id="ordersModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📦 My Orders</h2>
+        <button class="close-btn" style="color:#333;" onclick="closeModal('ordersModal')">×</button>
+      </div>
+      <div id="ordersContent"></div>
+    </div>
+  </div>
+
+  <!-- Checkout Modal (3-step) -->
+  <div class="modal" id="checkoutModal">
+    <div class="modal-content" style="max-width:560px">
+      <div class="modal-header">
+        <h2 id="checkoutTitle">Checkout</h2>
+        <button class="close-btn" style="color:#333;" onclick="closeModal('checkoutModal')">×</button>
+      </div>
+      <div class="stepper">
+        <div class="step" id="stepLbl1">1. Address</div>
+        <div class="step" id="stepLbl2">2. Summary</div>
+        <div class="step" id="stepLbl3">3. Payment</div>
+      </div>
+      <div id="checkoutBody"></div>
+    </div>
+  </div>
+
+  <!-- Product Detail Modal -->
+  <div class="modal" id="productModal">
+    <div class="modal-content" style="max-width:600px">
+      <div class="modal-header">
+        <h2 id="pdTitle">Product</h2>
+        <button class="close-btn" style="color:#333;" onclick="closeModal('productModal')">×</button>
+      </div>
+      <div id="pdBody"></div>
+    </div>
+  </div>
+
+  <!-- Feedback Modal -->
+  <div class="modal" id="feedbackModal">
+    <div class="modal-content" style="max-width:500px">
+      <div class="modal-header">
+        <h2>⭐ Rate this product</h2>
+        <button class="close-btn" style="color:#333;" onclick="closeModal('feedbackModal')">×</button>
+      </div>
+      <div id="feedbackBody"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ===== Backend API Integration =====
+    const API = 'http://localhost:5000/api';
+
+    // Helper: get auth header
+    function authHeader() {
+      const token = localStorage.getItem('shopease_token');
+      return token ? { 'Authorization': `Bearer ${token}` } : {};
+    }
+
+    // Helper: API fetch with auth
+    async function apiFetch(url, opts = {}) {
+      const headers = { 'Content-Type': 'application/json', ...authHeader(), ...(opts.headers || {}) };
+      const res = await fetch(API + url, { ...opts, headers });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Request failed');
+      return data.data;
+    }
+
+    // Currency formatter (Indian Rupees)
+    const fmt = (n) => '₹' + Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    // Session loaded from localStorage (set by login_v2.html)
+    let session = JSON.parse(localStorage.getItem('shopease_user') || 'null') || {
+      name: 'Guest', email: '', mobile: '', role: 'user'
+    };
+    // Backward compat: alias
+    session.fullName = session.name;
+
+    // Products loaded from backend (replaces hard-coded array)
+    let products = [];
+
+    let cart      = [];
+    let wishlist  = [];
+    let orders    = [];
+    let reviews   = [];
+    let savedAddress = '';
+    let currentCategory = 'All';
+
+
+    // ===== Session / Account (frontend mock — no real auth) =====
+    function loadSession() {
+      document.getElementById('userName').textContent = session.fullName?.split(' ')[0] || 'Account';
+      document.getElementById('dropName').textContent = session.fullName || 'User';
+      document.getElementById('dropEmail').textContent = session.email || '';
+    }
+
+    function toggleDropdown() {
+      document.getElementById('userDropdown').classList.toggle('show');
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.account')) {
+        document.getElementById('userDropdown').classList.remove('show');
+      }
+    });
+
+    function logout() {
+      localStorage.removeItem('shopease_token');
+      localStorage.removeItem('shopease_user');
+      window.location.href = 'login_v2.html';
+    }
+
+    function showProfile() {
+      toggleDropdown();
+      const c = document.getElementById('profileContent');
+      c.innerHTML = `
+        <div style="line-height:2">
+          <p><strong>Full Name:</strong> ${session.fullName || '-'}</p>
+          <p><strong>Email:</strong> ${session.email || '-'}</p>
+          <p><strong>Mobile:</strong> ${session.mobile || '-'}</p>
+          <p><strong>Role:</strong> ${session.role || 'user'}</p>
+        </div>`;
+      document.getElementById('profileModal').classList.add('show');
+    }
+
+    function showOrders() {
+      document.getElementById('userDropdown').classList.remove('show');
+      const c = document.getElementById('ordersContent');
+      const myOrders = [...orders].reverse();
+      if (myOrders.length === 0) {
+        c.innerHTML = '<p style="text-align:center;color:#999;padding:30px">No orders yet.</p>';
+      } else {
+        c.innerHTML = myOrders.map(o => {
+          const status = o.status || 'Pending';
+          const items = (o.items || []).map(it => {
+            const reviewed = reviews.some(r => r.orderId === o.id && r.productId === it.id);
+            return `
+              <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px dashed #eee;align-items:center">
+                ${it.image && it.image.startsWith('http') ? `<img src="${it.image}" style="width:48px;height:48px;object-fit:cover;border-radius:6px" />` : `<div style="font-size:1.6rem">${it.image || '📦'}</div>`}
+                <div style="flex:1">
+                  <div style="font-weight:500">${it.name}</div>
+                  <div style="font-size:0.85rem;color:#666">${fmt(it.price)} × ${it.qty}</div>
+                </div>
+                ${status === 'Delivered' ? (reviewed
+                ? `<span style="color:#2ecc71;font-size:0.8rem">✓ Reviewed</span>`
+                : `<button class="buy-btn" style="margin:0;padding:6px 12px;font-size:0.8rem;width:auto" onclick="openFeedback(${o.id},${it.id})">⭐ Rate</button>`) : ''}
+              </div>`;
+          }).join('');
+          return `
+          <div style="border:1px solid #eee;padding:12px;border-radius:8px;margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+              <strong>Order #${o.id}</strong>
+              <span class="status-badge status-${status}">${status}</span>
+            </div>
+            <p style="color:#666;font-size:0.85rem">${o.date}</p>
+            ${items}
+            <div style="margin-top:10px;display:flex;justify-content:space-between;font-size:0.9rem">
+              <span>Payment: <strong>${o.payment || 'COD'}</strong></span>
+              <span>Total: <strong style="color:#667eea">${fmt(o.total)}</strong></span>
+            </div>
+            ${o.address ? `<div style="margin-top:6px;font-size:0.8rem;color:#666">📍 ${o.address}</div>` : ''}
+          </div>`;
+        }).join('');
+      }
+      document.getElementById('ordersModal').classList.add('show');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('show');
+    }
+
+    // ===== Categories =====
+    function renderCategories() {
+      const cats = ['All', ...new Set(products.map(p => p.category))];
+      document.getElementById('categoryFilter').innerHTML = cats.map(c =>
+        `<button class="cat-btn ${c === currentCategory ? 'active' : ''}" onclick="filterCategory('${c}')">${c}</button>`
+      ).join('');
+    }
+    function filterCategory(c) { currentCategory = c; renderCategories(); renderProducts(); }
+
+    // ===== Products =====
+    function renderProducts() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = products.filter(p =>
+        (currentCategory === 'All' || p.category === currentCategory) &&
+        p.name.toLowerCase().includes(search)
+      );
+      const grid = document.getElementById('productGrid');
+      if (filtered.length === 0) {
+        grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#999;padding:40px">No products found.</p>';
+        return;
+      }
+      grid.innerHTML = filtered.map(p => {
+        const inWish = wishlist.some(w => w.id === p.id);
+        const img = p.image && p.image.startsWith('http')
+          ? `<img src="${p.image}" class="product-img" />`
+          : `<div class="product-img">${p.image || '📦'}</div>`;
+        return `
+        <div class="product-card">
+          <button class="wishlist-icon ${inWish ? 'active' : ''}" onclick="event.stopPropagation();toggleWish(${p.id})" title="Add to Wishlist">
+            ${inWish ? '❤️' : '🤍'}
+          </button>
+          <div onclick="showProductDetail(${p.id})" style="cursor:pointer">
+            ${img}
+            <div class="product-info">
+              <div class="product-cat">${p.category}</div>
+              <div class="product-name">${p.name}</div>
+              <div class="stars-display">${renderStars(avgRating(p.id))} <span style="color:#999;font-size:0.8rem">(${reviewCount(p.id)})</span></div>
+              <div class="product-price">${fmt(p.price)}</div>
+            </div>
+          </div>
+          <div style="padding:0 15px 15px">
+            <button class="add-cart" onclick="addToCart(${p.id})">🛒 Add to Cart</button>
+            <button class="buy-btn" onclick="buyNow(${p.id})">⚡ Buy Now</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // ===== Wishlist =====
+    function toggleWish(id) {
+      const idx = wishlist.findIndex(w => w.id === id);
+      if (idx >= 0) {
+        wishlist.splice(idx, 1);
+        showToast('Removed from wishlist');
+      } else {
+        const p = products.find(p => p.id === id);
+        wishlist.push(p);
+        showToast('❤️ Added to wishlist');
+      }
+      saveWish();
+      renderProducts();
+    }
+
+    function showWishlist() {
+      toggleDropdown();
+      const c = document.getElementById('wishlistItems');
+      if (wishlist.length === 0) {
+        c.innerHTML = '<p style="text-align:center;color:#999;padding:30px">Your wishlist is empty.</p>';
+      } else {
+        c.innerHTML = wishlist.map(w => `
+        <div class="wishlist-item">
+          ${w.image && w.image.startsWith('http') ? `<img src="${w.image}" style="width:64px;height:64px;object-fit:cover;border-radius:8px" />` : `<div style="font-size:2.5rem">${w.image || '📦'}</div>`}
+          <div class="wishlist-item-info">
+            <strong>${w.name}</strong>
+            <p style="color:#667eea;font-weight:bold">${fmt(w.price)}</p>
+            <button class="move-cart" onclick="addToCart(${w.id});toggleWish(${w.id});showWishlist()">Move to Cart</button>
+            <button class="remove-wish" onclick="toggleWish(${w.id});showWishlist()">Remove</button>
+          </div>
+        </div>
+      `).join('');
+      }
+      document.getElementById('wishlistModal').classList.add('show');
+    }
+
+    function saveWish() {
+      document.getElementById('wishBadge').textContent = wishlist.length;
+      document.getElementById('wishCountDrop').textContent = wishlist.length;
+    }
+
+    // ===== Cart =====
+    function addToCart(id) {
+      const p = products.find(p => p.id === id);
+      const item = cart.find(c => c.id === id);
+      if (item) item.qty++;
+      else cart.push({ ...p, qty: 1 });
+      saveCart();
+      renderCart();
+      showToast('Added to cart');
+    }
+    function changeQty(id, d) {
+      const item = cart.find(c => c.id === id);
+      if (item) {
+        item.qty += d;
+        if (item.qty <= 0) cart = cart.filter(c => c.id !== id);
+        saveCart(); renderCart();
+      }
+    }
+    function removeItem(id) { cart = cart.filter(c => c.id !== id); saveCart(); renderCart(); }
+    function saveCart() {
+      document.getElementById('cartCount').textContent = cart.reduce((s, i) => s + i.qty, 0);
+    }
+    function renderCart() {
+      const c = document.getElementById('cartItems');
+      if (cart.length === 0) {
+        c.innerHTML = '<div class="empty">🛒<p>Your cart is empty</p></div>';
+      } else {
+        c.innerHTML = cart.map(i => `
+        <div class="cart-item">
+          ${i.image && i.image.startsWith('http') ? `<img src="${i.image}" style="width:64px;height:64px;object-fit:cover;border-radius:8px" />` : `<div style="font-size:2.5rem">${i.image || '📦'}</div>`}
+          <div class="cart-item-info">
+            <h4>${i.name}</h4>
+            <div class="price">${fmt(i.price)}</div>
+            <div class="qty-controls">
+              <button onclick="changeQty(${i.id},-1)">−</button>
+              <span>${i.qty}</span>
+              <button onclick="changeQty(${i.id},1)">+</button>
+              <button class="remove-btn" onclick="removeItem(${i.id})">Remove</button>
+            </div>
+          </div>
+        </div>`).join('');
+      }
+      const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+      document.getElementById('cartTotal').textContent = fmt(total);
+    }
+    function toggleCart() {
+      document.getElementById('cartSidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('show');
+    }
+    function checkout() {
+      if (cart.length === 0) return showToast('Cart is empty');
+      toggleCart();
+      startCheckout(cart.map(i => ({ ...i })), true);
+    }
+
+    // ===== BUY NOW (single product) =====
+    function buyNow(id) {
+      const p = products.find(p => p.id === id);
+      if (!p) return;
+      startCheckout([{ ...p, qty: 1 }]);
+    }
+
+    // ===== 3-STEP CHECKOUT =====
+    let checkoutState = { step: 1, items: [], address: '', payment: 'cod', fromCart: false };
+
+    function startCheckout(items, fromCart = false) {
+      checkoutState = {
+        step: 1,
+        items,
+        address: savedAddress,
+        payment: 'cod',
+        fromCart
+      };
+      document.getElementById('checkoutModal').classList.add('show');
+      renderCheckout();
+    }
+
+    function setStep(n) { checkoutState.step = n; renderCheckout(); }
+
+    function updateStepperUI() {
+      [1, 2, 3].forEach(n => {
+        const el = document.getElementById('stepLbl' + n);
+        el.classList.remove('active', 'done');
+        if (n < checkoutState.step) el.classList.add('done');
+        else if (n === checkoutState.step) el.classList.add('active');
+      });
+    }
+
+    function calcTotals() {
+      const mrp = checkoutState.items.reduce((s, i) => s + i.price * i.qty, 0);
+      const delivery = 0;
+      const gst = +(mrp * 0.03).toFixed(2);
+      const total = +(mrp + delivery + gst).toFixed(2);
+      return { mrp, delivery, gst, total };
+    }
+
+    function renderCheckout() {
+      updateStepperUI();
+      const body = document.getElementById('checkoutBody');
+      const t = document.getElementById('checkoutTitle');
+
+      if (checkoutState.step === 1) {
+        t.textContent = 'Delivery Address';
+        const addr = checkoutState.address;
+        body.innerHTML = `
+          ${addr ? `
+            <div id="addrView" style="border:1px solid #eee;padding:12px;border-radius:8px;background:#fafafa">
+              <strong>Deliver to:</strong>
+              <p style="margin-top:6px;white-space:pre-wrap">${addr}</p>
+              <button class="btn-secondary" style="margin-top:10px" onclick="document.getElementById('addrView').style.display='none';document.getElementById('addrEdit').style.display='block'">✏️ Change</button>
+            </div>
+            <div id="addrEdit" style="display:none;margin-top:10px">
+              <label>Edit address:</label>
+              <textarea class="form-textarea" id="addrInput">${addr}</textarea>
+            </div>
+          ` : `
+            <label>Enter your delivery address:</label>
+            <textarea class="form-textarea" id="addrInput" placeholder="House no, Street, City, State, Pincode"></textarea>
+          `}
+          <div class="step-actions">
+            <button class="btn-secondary" onclick="closeModal('checkoutModal')">Cancel</button>
+            <button class="btn-primary" onclick="saveAddressAndNext()">Save & Next →</button>
+          </div>
+        `;
+      }
+
+      else if (checkoutState.step === 2) {
+        t.textContent = 'Order Summary';
+        const totals = calcTotals();
+        body.innerHTML = `
+          <div style="max-height:240px;overflow-y:auto">
+          ${checkoutState.items.map((i, idx) => `
+            <div style="display:flex;gap:10px;padding:10px;border-bottom:1px solid #eee;align-items:center">
+              ${i.image && i.image.startsWith('http') ? `<img src="${i.image}" style="width:48px;height:48px;object-fit:cover;border-radius:6px" />` : `<div style="font-size:2rem">${i.image || '📦'}</div>`}
+              <div style="flex:1">
+                <strong>${i.name}</strong>
+                <div style="color:#667eea;font-weight:bold">${fmt(i.price)}</div>
+              </div>
+              <div class="qty-controls">
+                <button onclick="updateCheckoutQty(${idx},-1)">−</button>
+                <span style="min-width:24px;text-align:center">${i.qty}</span>
+                <button onclick="updateCheckoutQty(${idx},1)">+</button>
+              </div>
+            </div>
+          `).join('')}
+          </div>
+          <div style="margin-top:14px">
+            <div class="summary-row"><span>MRP (${checkoutState.items.reduce((s, i) => s + i.qty, 0)} items)</span><span>${fmt(totals.mrp)}</span></div>
+            <div class="summary-row"><span>Delivery Fee</span><span style="color:#2ecc71">FREE</span></div>
+            <div class="summary-row"><span>GST (3%)</span><span>${fmt(totals.gst)}</span></div>
+            <div class="summary-row total-row"><span>Final Amount</span><span>${fmt(totals.total)}</span></div>
+          </div>
+          <div class="step-actions">
+            <button class="btn-secondary" onclick="setStep(1)">← Back</button>
+            <button class="btn-primary" onclick="setStep(3)">Next →</button>
+          </div>
+        `;
+      }
+
+      else if (checkoutState.step === 3) {
+        t.textContent = 'Payment';
+        const totals = calcTotals();
+        const upiId = '8668458898@ybl';  // was 'shopease@upi'
+        const upiUrl = `upi://pay?pa=${upiId}&pn=ShopEase&am=${totals.total}&cu=INR`;
+
+        const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
+        body.innerHTML = `
+          <div class="pay-option ${checkoutState.payment === 'qr' ? 'selected' : ''}" onclick="selectPay('qr')">
+            <input type="radio" name="pay" ${checkoutState.payment === 'qr' ? 'checked' : ''} />
+            <div style="flex:1">
+              <strong>📱 QR Code (UPI)</strong>
+              <div style="font-size:0.85rem;color:#666">Scan & pay ${fmt(totals.total)}</div>
+            </div>
+          </div>
+          ${checkoutState.payment === 'qr' ? `
+            <div class="qr-box">
+              <img src="${qrSrc}" alt="UPI QR" />
+              <p style="margin-top:8px;font-size:0.9rem">Pay <strong>${fmt(totals.total)}</strong> to <strong>${upiId}</strong></p>
+            </div>` : ''}
+          <div class="pay-option ${checkoutState.payment === 'cod' ? 'selected' : ''}" onclick="selectPay('cod')">
+            <input type="radio" name="pay" ${checkoutState.payment === 'cod' ? 'checked' : ''} />
+            <div style="flex:1">
+              <strong>💵 Cash on Delivery</strong>
+              <div style="font-size:0.85rem;color:#666">Pay when product is delivered</div>
+            </div>
+          </div>
+          <div style="margin-top:14px;padding:10px;background:#f0f3ff;border-radius:6px">
+            <div class="summary-row total-row" style="border:none;margin:0;padding:0"><span>Total Payable</span><span>${fmt(totals.total)}</span></div>
+          </div>
+          <div class="step-actions">
+            <button class="btn-secondary" onclick="setStep(2)">← Back</button>
+            <button class="btn-primary" onclick="placeOrder()">✓ Place Order</button>
+          </div>
+        `;
+      }
+    }
+
+    function saveAddressAndNext() {
+      const inp = document.getElementById('addrInput');
+      const val = inp ? inp.value.trim() : checkoutState.address;
+      if (!val) return showToast('Please enter delivery address');
+      checkoutState.address = val;
+      savedAddress = val;
+      setStep(2);
+    }
+
+    function updateCheckoutQty(idx, d) {
+      checkoutState.items[idx].qty += d;
+      if (checkoutState.items[idx].qty <= 0) checkoutState.items.splice(idx, 1);
+      if (checkoutState.items.length === 0) { closeModal('checkoutModal'); showToast('No items'); return; }
+      renderCheckout();
+    }
+
+    function selectPay(p) { checkoutState.payment = p; renderCheckout(); }
+
+    async function placeOrder() {
+      const totals = calcTotals();
+      const token = localStorage.getItem('shopease_token');
+      if (!token) { alert('Please login to place an order.'); window.location.href = 'login_v2.html'; return; }
+
+      // Build address object from the stored address string
+      const addrParts = checkoutState.address.split(',').map(s => s.trim());
+      const shippingAddress = {
+        fullName: session.fullName || session.name || 'Customer',
+        mobile:   session.mobile || '9999999999',
+        street:   addrParts[0] || checkoutState.address,
+        city:     addrParts[1] || 'City',
+        state:    addrParts[2] || 'State',
+        pincode:  addrParts[3] || '000000',
+      };
+
+      const orderPayload = {
+        items: checkoutState.items.map(i => ({
+          productId: i._id || i.id,
+          quantity:  i.qty,
+        })),
+        shippingAddress,
+        paymentMethod: checkoutState.payment === 'qr' ? 'UPI' : 'COD',
+      };
+
+      try {
+        const res = await fetch(`${API}/orders`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify(orderPayload),
+        });
+        const data = await res.json();
+        if (!res.ok) { showToast(data.message || 'Order failed'); return; }
+
+        // Add to local orders list for immediate display
+        orders.push({
+          id: data.data._id,
+          items: checkoutState.items,
+          address: checkoutState.address,
+          total: totals.total,
+          payment: checkoutState.payment === 'qr' ? 'UPI / QR' : 'Cash on Delivery',
+          status: 'Pending',
+          date: new Date().toLocaleString('en-IN'),
+        });
+        if (checkoutState.fromCart) { cart = []; saveCart(); renderCart(); }
+        closeModal('checkoutModal');
+        showToast('✓ Order placed successfully!');
+        setTimeout(() => showOrders(), 600);
+      } catch (err) {
+        showToast('Order failed: ' + err.message);
+      }
+    }
+
+    // ===== Reviews / Feedback =====
+    function getReviews(productId) {
+      return reviews.filter(r => r.productId === productId);
+    }
+    function reviewCount(pid) { return getReviews(pid).length; }
+    function avgRating(pid) {
+      const r = getReviews(pid);
+      if (r.length === 0) return 0;
+      return r.reduce((s, x) => s + x.rating, 0) / r.length;
+    }
+    function renderStars(n) {
+      const full = Math.round(n);
+      return '★'.repeat(full) + '☆'.repeat(5 - full);
+    }
+
+    function showProductDetail(id) {
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      const reviews = getReviews(id);
+      const img = p.image && p.image.startsWith('http')
+        ? `<img src="${p.image}" class="product-detail-img" style="object-fit:cover" />`
+        : `<div class="product-detail-img">${p.image || '📦'}</div>`;
+      document.getElementById('pdTitle').textContent = p.name;
+      document.getElementById('pdBody').innerHTML = `
+        ${img}
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div class="product-cat">${p.category}</div>
+            <div class="stars-display">${renderStars(avgRating(id))} <span style="color:#999;font-size:0.85rem">(${reviews.length} reviews)</span></div>
+          </div>
+          <div class="product-price" style="margin:0">${fmt(p.price)}</div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:14px">
+          <button class="add-cart" onclick="addToCart(${p.id});closeModal('productModal')">🛒 Add to Cart</button>
+          <button class="buy-btn" style="margin-top:0" onclick="closeModal('productModal');buyNow(${p.id})">⚡ Buy Now</button>
+        </div>
+        <h3 style="margin-top:20px;border-top:1px solid #eee;padding-top:15px;font-size:1.05rem">Customer Reviews</h3>
+        ${reviews.length === 0 ? '<p style="color:#999;text-align:center;padding:14px">No reviews yet.</p>' :
+          reviews.map(r => `
+            <div class="review-card">
+              <div style="display:flex;justify-content:space-between">
+                <strong>${r.userName}</strong>
+                <span class="stars-display">${renderStars(r.rating)}</span>
+              </div>
+              <p style="margin-top:6px">${r.text || ''}</p>
+              ${r.photo ? `<img src="${r.photo}" alt="review" />` : ''}
+              <div style="font-size:0.75rem;color:#999;margin-top:6px">${r.date}</div>
+            </div>
+          `).join('')}
+      `;
+      document.getElementById('productModal').classList.add('show');
+    }
+
+    // ===== Feedback Form =====
+    let fbState = { rating: 0, photo: '', orderId: null, productId: null };
+
+    function openFeedback(orderId, productId) {
+      const existing = reviews.find(r => r.orderId === orderId && r.productId === productId && r.userEmail === session.email);
+      if (existing) { showToast('You already reviewed this product'); return; }
+      fbState = { rating: 5, photo: '', orderId, productId };
+      const p = products.find(x => x.id === productId);
+      document.getElementById('feedbackBody').innerHTML = `
+        <p><strong>${p ? p.name : 'Product'}</strong></p>
+        <div style="margin-top:12px">
+          <label>Your Rating:</label>
+          <div id="starRow" style="margin-top:6px">
+            ${[1, 2, 3, 4, 5].map(n => `<span class="star-input ${n <= fbState.rating ? 'active' : ''}" onclick="setRating(${n})">★</span>`).join('')}
+          </div>
+        </div>
+        <div style="margin-top:12px">
+          <label>Your Review:</label>
+          <textarea class="form-textarea" id="fbText" placeholder="Share your experience..."></textarea>
+        </div>
+        <div style="margin-top:12px">
+          <label>Add a Photo (optional):</label>
+          <input type="file" accept="image/*" id="fbPhoto" onchange="readPhoto(event)" style="display:block;margin-top:6px" />
+          <div id="fbPreview" style="margin-top:8px"></div>
+        </div>
+        <div class="step-actions">
+          <button class="btn-secondary" onclick="closeModal('feedbackModal')">Cancel</button>
+          <button class="btn-primary" onclick="submitFeedback()">Submit Review</button>
+        </div>
+      `;
+      document.getElementById('feedbackModal').classList.add('show');
+    }
+
+    function setRating(n) {
+      fbState.rating = n;
+      document.getElementById('starRow').innerHTML =
+        [1, 2, 3, 4, 5].map(x => `<span class="star-input ${x <= n ? 'active' : ''}" onclick="setRating(${x})">★</span>`).join('');
+    }
+
+    function readPhoto(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        fbState.photo = ev.target.result;
+        document.getElementById('fbPreview').innerHTML =
+          `<img src="${ev.target.result}" style="max-width:120px;border-radius:6px" />`;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function submitFeedback() {
+      const text = document.getElementById('fbText').value.trim();
+      if (!fbState.rating) return showToast('Please select a rating');
+      const token = localStorage.getItem('shopease_token');
+      try {
+        const res = await fetch(`${API}/reviews`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ productId: fbState.productId, rating: fbState.rating, comment: text }),
+        });
+        const data = await res.json();
+        if (!res.ok) { showToast(data.message || 'Review failed'); return; }
+        // Add to local reviews for immediate display
+        reviews.push({
+          id: Date.now(), orderId: fbState.orderId, productId: fbState.productId,
+          userName: session.fullName || 'Customer', userEmail: session.email,
+          rating: fbState.rating, text, photo: fbState.photo,
+          date: new Date().toLocaleDateString('en-IN')
+        });
+      } catch (err) { /* offline fallback: still show locally */ reviews.push({ id: Date.now(), productId: fbState.productId, userName: session.fullName, rating: fbState.rating, text, photo: fbState.photo, date: new Date().toLocaleDateString('en-IN') }); }
+      closeModal('feedbackModal');
+      showToast('✓ Review submitted, thank you!');
+      renderProducts();
+      showOrders();
+    }
+
+    // ===== Toast =====
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    // ===== Init =====
+    document.getElementById('searchInput').addEventListener('input', renderProducts);
+
+    // Load products from backend, then render
+    async function initApp() {
+      // Redirect to login if no token
+      const token = localStorage.getItem('shopease_token');
+      if (!token) {
+        // Allow browsing without login — just no checkout
+        console.log('No token — browsing as guest');
+      }
+      loadSession();
+      try {
+        const res = await fetch(`${API}/products?limit=50`);
+        const data = await res.json();
+        if (res.ok && data.data && data.data.products) {
+          // Normalize: map _id -> id, images[0] -> image for backward compat
+          products = data.data.products.map(p => ({
+            ...p,
+            id: p._id,
+            image: (p.images && p.images.length > 0) ? p.images[0] : '📦',
+          }));
+        }
+      } catch (err) {
+        console.warn('Backend not reachable — using empty product list:', err.message);
+      }
+      renderCategories();
+      renderProducts();
+      renderCart();
+      saveCart();
+      saveWish();
+
+      // Load orders if logged in
+      const tok = localStorage.getItem('shopease_token');
+      if (tok) {
+        try {
+          const oRes = await fetch(`${API}/orders/my`, { headers: { 'Authorization': `Bearer ${tok}` } });
+          const oData = await oRes.json();
+          if (oRes.ok) {
+            orders = (oData.data || []).map(o => ({
+              id: o._id,
+              items: (o.items || []).map(it => ({ ...it, id: it.productId, name: it.name, price: it.price, qty: it.quantity, image: it.image })),
+              address: o.shippingAddress ? `${o.shippingAddress.street}, ${o.shippingAddress.city}` : '',
+              total: o.totalAmount,
+              payment: o.paymentMethod,
+              status: o.orderStatus,
+              date: new Date(o.createdAt).toLocaleString('en-IN'),
+            }));
+          }
+        } catch (e) { console.warn('Could not load orders:', e.message); }
+      }
+    }
+
+    initApp();
+  </script>
+</body>
+
+</html>

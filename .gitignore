@@ -1,0 +1,63 @@
+# ============================================================
+#  ShopEase – .gitignore
+#  MERN Stack (Node.js / Express backend + React / Vite frontend)
+# ============================================================
+
+# ── Dependencies ─────────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+
+# ── Environment Variables (NEVER commit secrets) ─────────────
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+
+# ── Build Output ─────────────────────────────────────────────
+dist/
+build/
+out/
+
+# ── Vite / React ─────────────────────────────────────────────
+frontend/dist/
+frontend/.vite/
+
+# ── Logs ─────────────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ── Runtime / OS Files ───────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Editor / IDE ─────────────────────────────────────────────
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ── Testing ──────────────────────────────────────────────────
+coverage/
+.nyc_output/
+
+# ── Misc ─────────────────────────────────────────────────────
+*.tgz
+*.zip
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
