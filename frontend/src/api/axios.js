@@ -2,7 +2,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: '/api',          // Vite proxy forwards to http://localhost:5000/api
+  baseURL: 'https://shopease1-backend.onrender.com/api',          // Vite proxy forwards to https://shopease1-backend.onrender.com/api
   headers: { 'Content-Type': 'application/json' },
   timeout: 10000,
 })

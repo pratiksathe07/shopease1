@@ -62,11 +62,11 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' })); // Parse form-en
 // ──────────────────────────────────────────────────
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
-}
+} 
 
 // ──────────────────────────────────────────────────
 // STATIC FILES — serve uploaded product images
-// Access via: http://localhost:5000/uploads/<filename>
+// Access via: https://shopease1-backend.onrender.com/uploads/<filename>
 // ──────────────────────────────────────────────────
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
