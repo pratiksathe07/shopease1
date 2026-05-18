@@ -5,16 +5,16 @@
 // ============================================================
 
 const express = require('express');
-const cors    = require('cors');
-const morgan  = require('morgan');
-const path    = require('path');
+const cors = require('cors');
+const morgan = require('morgan');
+const path = require('path');
 require('dotenv').config();
 
-const authRoutes    = require('./routes/authRoutes');
+const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
-const orderRoutes   = require('./routes/orderRoutes');
+const orderRoutes = require('./routes/orderRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
-const reviewRoutes  = require('./routes/reviewRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 
 const { errorHandler, notFound } = require('./middleware/errorMiddleware');
 
@@ -31,24 +31,22 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
   .filter(Boolean);
 
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (Postman, curl, mobile apps)
+  origin: function (origin, callback) {
     if (!origin) return callback(null, true);
 
-    // In development: allow ALL localhost ports automatically
-    if (process.env.NODE_ENV === 'development') {
-      const isLocalhost = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
-      if (isLocalhost) return callback(null, true);
+    const allowedOrigins = [
+      'https://shopease1-frontend-nyaf.onrender.com',
+      'http://localhost:5173',
+      'http://localhost:3000'
+    ];
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS blocked'));
     }
-
-    // In production: only explicitly listed origins
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-
-    callback(new Error(`CORS blocked for origin: ${origin}`));
   },
-  credentials: true,
-  methods:     ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 
 // ──────────────────────────────────────────────────
@@ -62,7 +60,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' })); // Parse form-en
 // ──────────────────────────────────────────────────
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
-} 
+}
 
 // ──────────────────────────────────────────────────
 // STATIC FILES — serve uploaded product images
@@ -85,11 +83,11 @@ app.get('/api/health', (req, res) => {
 // ──────────────────────────────────────────────────
 // API ROUTES
 // ──────────────────────────────────────────────────
-app.use('/api/auth',     authRoutes);    // Authentication & user management
+app.use('/api/auth', authRoutes);    // Authentication & user management
 app.use('/api/products', productRoutes); // Product CRUD
-app.use('/api/orders',   orderRoutes);   // Order management
+app.use('/api/orders', orderRoutes);   // Order management
 app.use('/api/payments', paymentRoutes); // Payment tracking
-app.use('/api/reviews',  reviewRoutes);  // Product reviews
+app.use('/api/reviews', reviewRoutes);  // Product reviews
 
 // ──────────────────────────────────────────────────
 // ERROR HANDLERS (must be registered AFTER routes)
