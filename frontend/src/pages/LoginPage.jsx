@@ -152,7 +152,7 @@ export default function LoginPage() {
 
           {/* ── Right: Banner ── */}
           <div style={{ width: '45%', background: 'linear-gradient(135deg,#667eea,#764ba2)', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 30px', textAlign: 'center' }}>
-            <img src="/logo.pngC:\Users\prati\OneDrive - MITVishwaPrayagUniversity\SEM 4\FSD\shopease1\frontend\logo.png" alt="ShopEase" style={{ width: 120, height: 120, objectFit: 'contain', background: '#fff', borderRadius: '50%', padding: 20, boxShadow: '0 10px 30px rgba(0,0,0,0.2)', marginBottom: 28 }} onError={e => { e.target.style.fontSize = '4rem'; e.target.src = '' }} />
+            <img src="C:\Users\prati\OneDrive - MITVishwaPrayagUniversity\SEM 4\FSD\shopease1\frontend\logo.png" alt="ShopEase" style={{ width: 12, height: 12, objectFit: 'contain', background: '#a47171ff', borderRadius: '20%', padding: 20, boxShadow: '0 10px 30px rgba(0,0,0,0.2)', marginBottom: 28 }} onError={e => { e.target.style.fontSize = '4rem'; e.target.src = '' }} />
             <h3 style={{ fontSize: '1.5rem', marginBottom: 10 }}>Shop smarter</h3>
             <p style={{ opacity: 0.9, lineHeight: 1.6, fontSize: '0.93rem' }}>
               <b><i>Shop Smart, Shop Easy, Shop Online.</i></b>
