@@ -4,17 +4,17 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../components/Toast'
 
-const emailRe  = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 const mobileRe = /^[6-9][0-9]{9}$/
 
 export default function LoginPage() {
   const { login, register } = useAuth()
-  const toast    = useToast()
+  const toast = useToast()
   const navigate = useNavigate()
 
-  const [mode,    setMode]    = useState('login')  // 'login' | 'register'
+  const [mode, setMode] = useState('login')  // 'login' | 'register'
   const [loading, setLoading] = useState(false)
-  const [errors,  setErrors]  = useState({})
+  const [errors, setErrors] = useState({})
 
   // Login form state
   const [loginData, setLoginData] = useState({ email: '', password: '', role: 'user' })
@@ -25,9 +25,9 @@ export default function LoginPage() {
   // ── Validate ─────────────────────────────────
   function validateLogin() {
     const e = {}
-    if (!loginData.email)             e.email    = 'Email is required'
+    if (!loginData.email) e.email = 'Email is required'
     else if (!emailRe.test(loginData.email)) e.email = 'Enter a valid email'
-    if (!loginData.password)          e.password = 'Password is required'
+    if (!loginData.password) e.password = 'Password is required'
     setErrors(e)
     return Object.keys(e).length === 0
   }
@@ -35,10 +35,10 @@ export default function LoginPage() {
   function validateRegister() {
     const e = {}
     if (!regData.name || regData.name.trim().length < 2) e.name = 'Name must be at least 2 characters'
-    if (!regData.email)                                   e.email = 'Email is required'
-    else if (!emailRe.test(regData.email))                e.email = 'Enter a valid email'
-    if (!regData.mobile)                                  e.mobile = 'Mobile is required'
-    else if (!mobileRe.test(regData.mobile))              e.mobile = 'Enter a valid 10-digit Indian mobile number'
+    if (!regData.email) e.email = 'Email is required'
+    else if (!emailRe.test(regData.email)) e.email = 'Enter a valid email'
+    if (!regData.mobile) e.mobile = 'Mobile is required'
+    else if (!mobileRe.test(regData.mobile)) e.mobile = 'Enter a valid 10-digit Indian mobile number'
     if (!regData.password || regData.password.length < 6) e.password = 'Password must be at least 6 characters'
     setErrors(e)
     return Object.keys(e).length === 0
@@ -152,7 +152,7 @@ export default function LoginPage() {
 
           {/* ── Right: Banner ── */}
           <div style={{ width: '45%', background: 'linear-gradient(135deg,#667eea,#764ba2)', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 30px', textAlign: 'center' }}>
-            <img src="/logo.png" alt="ShopEase" style={{ width: 120, height: 120, objectFit: 'contain', background: '#fff', borderRadius: '50%', padding: 20, boxShadow: '0 10px 30px rgba(0,0,0,0.2)', marginBottom: 28 }} onError={e => { e.target.style.fontSize = '4rem'; e.target.src = '' }} />
+            <img src="/logo.pngC:\Users\prati\OneDrive - MITVishwaPrayagUniversity\SEM 4\FSD\shopease1\frontend\logo.png" alt="ShopEase" style={{ width: 120, height: 120, objectFit: 'contain', background: '#fff', borderRadius: '50%', padding: 20, boxShadow: '0 10px 30px rgba(0,0,0,0.2)', marginBottom: 28 }} onError={e => { e.target.style.fontSize = '4rem'; e.target.src = '' }} />
             <h3 style={{ fontSize: '1.5rem', marginBottom: 10 }}>Shop smarter</h3>
             <p style={{ opacity: 0.9, lineHeight: 1.6, fontSize: '0.93rem' }}>
               <b><i>Shop Smart, Shop Easy, Shop Online.</i></b>
