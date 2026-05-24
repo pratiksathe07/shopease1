@@ -74,33 +74,55 @@ const inputStyle = {
 function AddProductModal({ onClose, onAdded }) {
   const toast = useToast()
   const [saving, setSaving] = useState(false)
+  const [files, setFiles]   = useState([])        // File objects for upload
+  const [previews, setPreviews] = useState([])    // Local preview URLs
   const [form, setForm] = useState({
     name: '', description: '', category: '', brand: '',
-    price: '', stock: '', images: '',
+    price: '', stock: '', imageUrls: '',
     ratingAverage: '', ratingCount: '',
   })
 
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }))
+
+  function handleFileChange(e) {
+    const selected = Array.from(e.target.files).slice(0, 5)
+    setFiles(selected)
+    setPreviews(selected.map(f => URL.createObjectURL(f)))
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
     if (!form.name.trim() || !form.price) return toast.error('Name and Price are required')
     setSaving(true)
     try {
-      const payload = {
-        name: form.name.trim(),
-        description: form.description.trim(),
-        category: form.category.trim(),
-        brand: form.brand.trim(),
-        price: Number(form.price),
-        stock: Number(form.stock) || 0,
-        images: form.images
-          ? form.images.split(',').map(u => u.trim()).filter(Boolean)
-          : [],
-        rating: {
-          average: form.ratingAverage ? Number(form.ratingAverage) : 0,
-          count:   form.ratingCount   ? Number(form.ratingCount)   : 0,
-        },
+      let payload
+      if (files.length > 0) {
+        // Build FormData for file upload → saved to MongoDB
+        payload = new FormData()
+        payload.append('name',        form.name.trim())
+        payload.append('description', form.description.trim())
+        payload.append('category',    form.category.trim())
+        payload.append('brand',       form.brand.trim())
+        payload.append('price',       form.price)
+        payload.append('stock',       form.stock || '0')
+        files.forEach(f => payload.append('images', f))
+      } else {
+        // JSON payload with optional external URLs
+        payload = {
+          name:        form.name.trim(),
+          description: form.description.trim(),
+          category:    form.category.trim(),
+          brand:       form.brand.trim(),
+          price:       Number(form.price),
+          stock:       Number(form.stock) || 0,
+          images:      form.imageUrls
+            ? form.imageUrls.split(',').map(u => u.trim()).filter(Boolean)
+            : [],
+          rating: {
+            average: form.ratingAverage ? Number(form.ratingAverage) : 0,
+            count:   form.ratingCount   ? Number(form.ratingCount)   : 0,
+          },
+        }
       }
       await createProduct(payload)
       toast.success('Product added successfully! 🎉')
@@ -140,9 +162,36 @@ function AddProductModal({ onClose, onAdded }) {
             <input style={inputStyle} type="number" min="0" value={form.stock} onChange={e => set('stock', e.target.value)} placeholder="100" />
           </Field>
         </div>
-        <Field label="Image URLs (comma-separated)">
-          <input style={inputStyle} value={form.images} onChange={e => set('images', e.target.value)} placeholder="https://..., https://..." />
+
+        {/* ── Image upload section ── */}
+        <Field label="Upload Images (saved to MongoDB)">
+          <label style={{
+            display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
+            padding: '9px 12px', border: '2px dashed #667eea', borderRadius: 8,
+            background: '#f0f4ff', color: '#667eea', fontWeight: 600, fontSize: '0.85rem',
+            transition: 'background 0.2s',
+          }}>
+            📁 Choose images (up to 5)
+            <input type="file" accept="image/jpeg,image/png,image/webp" multiple
+              onChange={handleFileChange}
+              style={{ display: 'none' }} />
+          </label>
+          {previews.length > 0 && (
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 8 }}>
+              {previews.map((src, i) => (
+                <img key={i} src={src} alt="preview"
+                  style={{ width: 64, height: 64, objectFit: 'cover', borderRadius: 6, border: '2px solid #667eea' }} />
+              ))}
+            </div>
+          )}
         </Field>
+
+        {files.length === 0 && (
+          <Field label="Or paste Image URLs (comma-separated)">
+            <input style={inputStyle} value={form.imageUrls} onChange={e => set('imageUrls', e.target.value)} placeholder="https://..., https://..." />
+          </Field>
+        )}
+
         <div style={{ background: '#f8f8ff', borderRadius: 10, padding: '14px 16px', marginBottom: 14 }}>
           <div style={{ fontWeight: 600, fontSize: '0.82rem', color: '#555', marginBottom: 10 }}>⭐ Rating Object</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
@@ -178,7 +227,9 @@ const CATEGORIES = ['Electronics','Fashion','Home','Sports','Beauty','Books','To
 
 function EditProductModal({ product, onClose, onSaved }) {
   const toast = useToast()
-  const [saving, setSaving] = useState(false)
+  const [saving, setSaving]     = useState(false)
+  const [files, setFiles]       = useState([])     // New file objects to upload
+  const [previews, setPreviews] = useState([])     // New file preview URLs
   const [form, setForm] = useState({
     name:          product.name          || '',
     description:   product.description   || '',
@@ -186,7 +237,7 @@ function EditProductModal({ product, onClose, onSaved }) {
     brand:         product.brand         || '',
     price:         product.price         ?? '',
     stock:         product.stock         ?? '',
-    images:        (product.images || []).join(', '),
+    imageUrls:     (product.images || []).join(', '),
     ratingAverage: product.rating?.average ?? '',
     ratingCount:   product.rating?.count   ?? '',
     isActive:      product.isActive !== false,
@@ -194,26 +245,47 @@ function EditProductModal({ product, onClose, onSaved }) {
 
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }))
 
+  function handleFileChange(e) {
+    const selected = Array.from(e.target.files).slice(0, 5)
+    setFiles(selected)
+    setPreviews(selected.map(f => URL.createObjectURL(f)))
+  }
+
   async function handleSubmit(e) {
     e.preventDefault()
     if (!form.name.trim() || form.price === '') return toast.error('Name and Price are required')
     setSaving(true)
     try {
-      const payload = {
-        name:        form.name.trim(),
-        description: form.description.trim(),
-        category:    form.category,
-        brand:       form.brand.trim(),
-        price:       Number(form.price),
-        stock:       Number(form.stock) || 0,
-        images:      form.images
-          ? form.images.split(',').map(u => u.trim()).filter(Boolean)
-          : [],
-        rating: {
-          average: form.ratingAverage !== '' ? Number(form.ratingAverage) : 0,
-          count:   form.ratingCount   !== '' ? Number(form.ratingCount)   : 0,
-        },
-        isActive: form.isActive,
+      let payload
+      if (files.length > 0) {
+        // Build FormData for file upload → saved to MongoDB
+        payload = new FormData()
+        payload.append('name',        form.name.trim())
+        payload.append('description', form.description.trim())
+        payload.append('category',    form.category)
+        payload.append('brand',       form.brand.trim())
+        payload.append('price',       form.price)
+        payload.append('stock',       form.stock || '0')
+        payload.append('isActive',    form.isActive)
+        files.forEach(f => payload.append('images', f))
+      } else {
+        // JSON payload (keep existing images or external URLs)
+        payload = {
+          name:        form.name.trim(),
+          description: form.description.trim(),
+          category:    form.category,
+          brand:       form.brand.trim(),
+          price:       Number(form.price),
+          stock:       Number(form.stock) || 0,
+          images:      form.imageUrls
+            ? form.imageUrls.split(',').map(u => u.trim()).filter(Boolean)
+            : [],
+          rating: {
+            average: form.ratingAverage !== '' ? Number(form.ratingAverage) : 0,
+            count:   form.ratingCount   !== '' ? Number(form.ratingCount)   : 0,
+          },
+          isActive: form.isActive,
+        }
       }
       const res = await updateProduct(product._id, payload)
       toast.success('Product updated! ✅')
@@ -251,20 +323,49 @@ function EditProductModal({ product, onClose, onSaved }) {
             <input style={inputStyle} type="number" min="0" value={form.stock} onChange={e => set('stock', e.target.value)} />
           </Field>
         </div>
-        <Field label="Image URLs (comma-separated)">
-          <input style={inputStyle} value={form.images} onChange={e => set('images', e.target.value)} placeholder="https://..." />
-        </Field>
-        <div style={{ background: '#f8f8ff', borderRadius: 10, padding: '14px 16px', marginBottom: 14 }}>
-          <div style={{ fontWeight: 600, fontSize: '0.82rem', color: '#555', marginBottom: 10 }}>⭐ Rating Object</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            <Field label="Average (0–5)">
-              <input style={inputStyle} type="number" min="0" max="5" step="0.1" value={form.ratingAverage} onChange={e => set('ratingAverage', e.target.value)} />
-            </Field>
-            <Field label="Count (reviews)">
-              <input style={inputStyle} type="number" min="0" value={form.ratingCount} onChange={e => set('ratingCount', e.target.value)} />
-            </Field>
+
+        {/* ── Current images preview ── */}
+        {product.images?.length > 0 && files.length === 0 && (
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ fontWeight: 600, fontSize: '0.82rem', color: '#555', marginBottom: 6 }}>Current Images</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {product.images.map((src, i) => (
+                <img key={i} src={src} alt="current"
+                  style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 6, border: '2px solid #e0e0f0' }}
+                  onError={e => e.target.style.display = 'none'} />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* ── New file upload ── */}
+        <Field label="Replace Images (upload to MongoDB)">
+          <label style={{
+            display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
+            padding: '9px 12px', border: '2px dashed #667eea', borderRadius: 8,
+            background: '#f0f4ff', color: '#667eea', fontWeight: 600, fontSize: '0.85rem',
+          }}>
+            📁 Choose new images (up to 5)
+            <input type="file" accept="image/jpeg,image/png,image/webp" multiple
+              onChange={handleFileChange}
+              style={{ display: 'none' }} />
+          </label>
+          {previews.length > 0 && (
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 8 }}>
+              {previews.map((src, i) => (
+                <img key={i} src={src} alt="new preview"
+                  style={{ width: 64, height: 64, objectFit: 'cover', borderRadius: 6, border: '2px solid #2ecc71' }} />
+              ))}
+            </div>
+          )}
+        </Field>
+
+        {files.length === 0 && (
+          <Field label="Or paste Image URLs (comma-separated)">
+            <input style={inputStyle} value={form.imageUrls} onChange={e => set('imageUrls', e.target.value)} placeholder="https://..." />
+          </Field>
+        )}
+
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16,
           background: '#f8fff8', border: '1.5px solid #d4edda', borderRadius: 8, padding: '10px 14px' }}>
           <input type="checkbox" id="isActive" checked={form.isActive} onChange={e => set('isActive', e.target.checked)}
